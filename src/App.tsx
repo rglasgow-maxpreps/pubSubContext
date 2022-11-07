@@ -12,7 +12,7 @@ const { Provider, useStore } = createPubSubContext({
 });
 
 const InputName = () => {
-  const [name, setName] = useStore((state) => state.name);
+  const { get: name, set: setName } = useStore((state) => state.name);
 
   return (
     <input
@@ -24,25 +24,25 @@ const InputName = () => {
 };
 
 const DisplayName = () => {
-  const [name] = useStore((state) => state.name);
+  const { get: name } = useStore((state) => state.name);
 
   return <div>{name}</div>;
 };
 
 const DisplayCount = () => {
-  const [count] = useStore((state) => state.count);
+  const { get: count } = useStore((state) => state.count);
 
   return <div>{count}</div>;
 };
 
 const IncrementCount = () => {
-  const [count, setCount] = useStore((state) => state.count);
+  const { get: count, set: setCount } = useStore((state) => state.count);
 
   return <button onClick={() => setCount({ count: count + 1 })}>+</button>;
 };
 
 const DisplayAll = () => {
-  const [state] = useStore((state) => state);
+  const { get: state } = useStore((state) => state);
 
   return (
     <div
@@ -60,7 +60,7 @@ const DisplayAll = () => {
 };
 
 const NestedDataInput = () => {
-  const [nestedData, setData] = useStore((state) => state.nested);
+  const { get: nestedData, set: setData } = useStore((state) => state.nested);
 
   return (
     <input
@@ -74,13 +74,13 @@ const NestedDataInput = () => {
 };
 
 const NestedDataDisplay = () => {
-  const [data] = useStore((state) => state.nested.data);
+  const { get: data } = useStore((state) => state.nested.data);
 
   return <div>{data}</div>;
 };
 
 const NestedData2Display = () => {
-  const [data2] = useStore((state) => state.nested.data2);
+  const { get: data2 } = useStore((state) => state.nested.data2);
 
   return <div>{data2}</div>;
 };

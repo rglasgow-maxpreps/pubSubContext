@@ -1,4 +1,4 @@
-import React, {
+import {
   useRef,
   createContext,
   useContext,
@@ -14,7 +14,6 @@ export default function createPubSubContext<Store>(initialState: Store):PubSubCo
   /**
    * Hook to get access to the data in the store
    * - by default there will be no subscribers to the store
-   * @returns {UseStoreData<Store>}
    */
   const useStoreData = (): UseStoreData<Store> => {
     // the state of the store
@@ -29,13 +28,13 @@ export default function createPubSubContext<Store>(initialState: Store):PubSubCo
     // update the store and notify subscribers
     const set = useCallback((value: Partial<Store>) => {
       store.current = { ...store.current, ...value };
-      subscribers.current.forEach((callback) => callback());
+      subscribers.current.forEach((cb) => cb());
     }, []);
 
     // subscribe to the store
-    const subscribe = useCallback((callback: () => void) => {
-      subscribers.current.add(callback);
-      return () => subscribers.current.delete(callback);
+    const subscribe = useCallback((cb: () => void) => {
+      subscribers.current.add(cb);
+      return () => subscribers.current.delete(cb);
     }, []);
 
     return {
@@ -45,9 +44,7 @@ export default function createPubSubContext<Store>(initialState: Store):PubSubCo
     };
   };
 
-  type UseStoreDataReturnType = ReturnType<typeof useStoreData>;
-
-  const StoreContext = createContext<UseStoreDataReturnType | null>(null);
+  const StoreContext = createContext<ReturnType<typeof useStoreData> | null>(null);
 
   const Provider:FC<{ children:ReactNode }>=( { children })=> {
     return (
@@ -61,15 +58,15 @@ export default function createPubSubContext<Store>(initialState: Store):PubSubCo
     selector
   )=>{
     const store = useContext(StoreContext);
+
+
     if (!store) {
       throw new Error('Store not found');
     }
 
-    const state = useSyncExternalStore(store.subscribe, () =>
-      selector(store.get())
-    );
+    const state = useSyncExternalStore(store.subscribe, () => selector(store.get()));
 
-    return [state, store.set];
+    return {get:state, set:store.set};
   }
 
   return {

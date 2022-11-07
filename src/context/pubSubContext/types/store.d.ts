@@ -15,7 +15,7 @@ export interface UseStoreData<Store> {
 
 export type UseStore<Store> = <SelectorOutput>(
   selector: (store: Store) => SelectorOutput
-) => [SelectorOutput, (value: Partial<Store>) => void];
+) => { get: SelectorOutput; set: (value: Partial<Store>) => void };
 
 export interface PubSubContextStore<TData> {
   useStore: UseStore<TData>;
